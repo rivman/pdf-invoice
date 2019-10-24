@@ -10,10 +10,9 @@
  */
 
 
-namespace Konekt\PdfInvoice\Tests;
+namespace Workice\PdfInvoice\Tests;
 
-
-use Konekt\PdfInvoice\InvoicePrinter;
+use Workice\PdfInvoice\InvoicePrinter;
 use PHPUnit\Framework\TestCase;
 
 class BaseClassTest extends TestCase
@@ -27,5 +26,4 @@ class BaseClassTest extends TestCase
 
         $this->assertInstanceOf(InvoicePrinter::class, $invoicr);
     }
-
 }

@@ -10,8 +10,7 @@
  */
 
 
-namespace Konekt\PdfInvoice\Tests;
-
+namespace Workice\PdfInvoice\Tests;
 
 use PHPUnit\Framework\TestCase;
 
@@ -28,5 +27,4 @@ class AAASmokeTest extends TestCase
     {
         $this->assertTrue(true);
     }
-
 }

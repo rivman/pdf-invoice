@@ -1,16 +1,16 @@
 {
-    "name": "konekt/pdf-invoice",
-    "description": "Library to generate PDF invoices",
+    "name": "wmandai/pdf-invoice",
+    "description": "Library to generate PDF invoices - Credits to Attila Fulop",
     "type": "library",
     "license": "GPL-2.0-or-later",
-    "keywords": ["invoice", "pdf", "konekt", "artkonekt"],
+    "keywords": ["invoice", "pdf", "konekt", "workice"],
     "support": {
-        "source": "https://github.com/artkonekt/pdf-invoice"
+        "source": "https://github.com/wmandai/pdf-invoice"
     },
     "authors": [
         {
-            "name": "Attila Fulop",
-            "homepage": "https://github.com/fulopattila122"
+            "name": "William Mandai",
+            "homepage": "https://github.com/wmandai"
         }
     ],
     "require": {
@@ -23,11 +23,11 @@
         "phpunit/phpunit": "~5.0"
     },
     "autoload": {
-        "psr-4": { "Konekt\\PdfInvoice\\": "src/" }
+        "psr-4": { "Workice\\PdfInvoice\\": "src/" }
     },
     "autoload-dev": {
         "psr-4": {
-            "Konekt\\PdfInvoice\\Tests\\": "tests/"
+            "Workice\\PdfInvoice\\Tests\\": "tests/"
         }
     },
     "extra": {
