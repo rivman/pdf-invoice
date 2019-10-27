@@ -8,7 +8,6 @@
  * @since       2017-12-15
  *
  */
-
 namespace Workice\PdfInvoice;
 
 use FPDF;
@@ -18,7 +17,6 @@ class InvoicePrinter extends FPDF
     const ICONV_CHARSET_INPUT = 'UTF-8';
     const ICONV_CHARSET_OUTPUT_A = 'ISO-8859-1//TRANSLIT';
     const ICONV_CHARSET_OUTPUT_B = 'windows-1252//TRANSLIT';
-
     public $angle           = 0;
     public $font            = 'helvetica';        /* Font Name : See inc/fpdf/font for all supported fonts */
     public $columnOpacity   = 0.06;            /* Items table background color opacity. Range (0.00 - 1) */
@@ -29,7 +27,7 @@ class InvoicePrinter extends FPDF
         't' => 15,
         'r' => 15
     ]; /* l: Left Side , t: Top Side , r: Right Side */
-
+    public $fontSizeProductDescription   = 7;                /* font size of product description */
     public $lang;
     public $document;
     public $type;
@@ -51,7 +49,6 @@ class InvoicePrinter extends FPDF
     public $display_tofrom = true;
     protected $displayToFromHeaders = true;
     protected $columns;
-
     public function __construct($size = 'A4', $currency = '$', $language = 'en')
     {
         $this->items              = [];
@@ -63,22 +60,17 @@ class InvoicePrinter extends FPDF
         $this->setLanguage($language);
         $this->setDocumentSize($size);
         $this->setColor("#222222");
-
         $this->recalculateColumns();
-
         parent::__construct('P', 'mm', [$this->document['w'], $this->document['h']]);
-
         $this->AliasNbPages();
         $this->SetMargins($this->margins['l'], $this->margins['t'], $this->margins['r']);
     }
-
     private function setLanguage($language)
     {
         $this->language = $language;
         include(dirname(__DIR__) . '/inc/languages/' . $language . '.inc');
         $this->lang = $lang;
     }
-
     private function setDocumentSize($dsize)
     {
         switch ($dsize) {
@@ -99,31 +91,25 @@ class InvoicePrinter extends FPDF
                 $document['h'] = 297;
                 break;
         }
-
         $this->document = $document;
     }
-
     private function resizeToFit($image)
     {
         list($width, $height) = getimagesize($image);
         $newWidth  = $this->maxImageDimensions[0] / $width;
         $newHeight = $this->maxImageDimensions[1] / $height;
         $scale     = min($newWidth, $newHeight);
-
         return [
             round($this->pixelsToMM($scale * $width)),
             round($this->pixelsToMM($scale * $height))
         ];
     }
-
     private function pixelsToMM($val)
     {
         $mm_inch = 25.4;
         $dpi     = 96;
-
         return ($val * $mm_inch) / $dpi;
     }
-
     private function hex2rgb($hex)
     {
         $hex = str_replace("#", "", $hex);
@@ -137,15 +123,12 @@ class InvoicePrinter extends FPDF
             $b = hexdec(substr($hex, 4, 2));
         }
         $rgb = [$r, $g, $b];
-
         return $rgb;
     }
-
     private function br2nl($string)
     {
         return preg_replace('/\<br(\s*)?\/?\>/i', "\n", $string);
     }
-
     public function isValidTimezoneId($zone)
     {
         try {
@@ -153,42 +136,34 @@ class InvoicePrinter extends FPDF
         } catch (Exception $e) {
             return false;
         }
-
         return true;
     }
-
     public function setTimeZone($zone = "")
     {
         if (!empty($zone) and $this->isValidTimezoneId($zone) === true) {
             date_default_timezone_set($zone);
         }
     }
-
     public function setType($title)
     {
         $this->title = $title;
     }
-
     public function setColor($rgbcolor)
     {
         $this->color = $this->hex2rgb($rgbcolor);
     }
-
     public function setDate($date)
     {
         $this->date = $date;
     }
-
     public function setTime($time)
     {
         $this->time = $time;
     }
-
     public function setDue($date)
     {
         $this->due = $date;
     }
-
     public function setLogo($logo = 0, $maxWidth = 0, $maxHeight = 0)
     {
         if ($maxWidth and $maxHeight) {
@@ -197,7 +172,6 @@ class InvoicePrinter extends FPDF
         $this->logo       = $logo;
         $this->dimensions = $this->resizeToFit($logo);
     }
-
     public function hide_tofrom()
     {
         $this->display_tofrom = false;
@@ -207,37 +181,36 @@ class InvoicePrinter extends FPDF
     {
         $this->displayToFromHeaders = false;
     }
-
     public function setFrom($data)
     {
         $this->from = $data;
     }
-
     public function setTo($data)
     {
         $this->to = $data;
     }
-
     public function setReference($reference)
     {
         $this->reference = $reference;
     }
-
     public function setNumberFormat($decimals, $thousands_sep)
     {
         $this->referenceformat = [$decimals, $thousands_sep];
     }
-
+    
+    public function setFontSizeProductDescription($data)
+    {
+        $this->fontSizeProductDescription = $data;
+    }
+    
     public function flipflop()
     {
         $this->flipflop = true;
     }
-
     public function addItem($item, $description = "", $quantity, $vat, $price, $discount = 0, $total)
     {
         $p['item']        = $item;
         $p['description'] = $this->br2nl($description);
-
         if ($vat !== false) {
             $p['vat'] = $vat;
             if (is_numeric($vat)) {
@@ -254,7 +227,6 @@ class InvoicePrinter extends FPDF
         $p['quantity'] = $quantity;
         $p['price']    = $price;
         $p['total']    = $total;
-
         if ($discount !== false) {
             $this->firstColumnWidth = 58;
             $p['discount']          = $discount;
@@ -271,7 +243,6 @@ class InvoicePrinter extends FPDF
         }
         $this->items[] = $p;
     }
-
     public function addTotal($name, $value, $colored = false)
     {
         $t['name']  = $name;
@@ -287,34 +258,28 @@ class InvoicePrinter extends FPDF
         $t['colored']   = $colored;
         $this->totals[] = $t;
     }
-
     public function addTitle($title)
     {
         $this->addText[] = ['title', $title];
     }
-
     public function addParagraph($paragraph)
     {
         $paragraph       = $this->br2nl($paragraph);
         $this->addText[] = ['paragraph', $paragraph];
     }
-
     public function addBadge($badge, $color = false)
     {
         $this->badge = $badge;
-
         if ($color) {
             $this->badgeColor = $this->hex2rgb($color);
         } else {
             $this->badgeColor = $this->color;
         }
     }
-
     public function setFooternote($note)
     {
         $this->footernote = $note;
     }
-
     public function render($name = '', $destination = '')
     {
         $this->AddPage();
@@ -322,7 +287,6 @@ class InvoicePrinter extends FPDF
         $this->AliasNbPages();
         return $this->Output($destination, $name);
     }
-
     public function Header()
     {
         if (isset($this->logo) and !empty($this->logo)) {
@@ -334,7 +298,6 @@ class InvoicePrinter extends FPDF
                 $this->dimensions[1]
             );
         }
-
         //Title
         $this->SetTextColor(0, 0, 0);
         $this->SetFont($this->font, 'B', 20);
@@ -343,7 +306,6 @@ class InvoicePrinter extends FPDF
         }
         $this->SetFont($this->font, '', 9);
         $this->Ln(5);
-
         $lineheight = 5;
         //Calculate position of strings
         $this->SetFont($this->font, 'B', 9);
@@ -352,7 +314,6 @@ class InvoicePrinter extends FPDF
             mb_strtoupper($this->GetStringWidth($this->lang['date'], self::ICONV_CHARSET_INPUT)),
             mb_strtoupper($this->GetStringWidth($this->lang['due'], self::ICONV_CHARSET_INPUT))
         ) - 35;
-
         //Number
         if (!empty($this->reference)) {
             $this->Cell($positionX, $lineheight);
@@ -377,7 +338,6 @@ class InvoicePrinter extends FPDF
         $this->SetTextColor(50, 50, 50);
         $this->SetFont($this->font, '', 9);
         $this->Cell(0, $lineheight, $this->date, 0, 1, 'R');
-
         //Time
         if (!empty($this->time)) {
             $this->Cell($positionX, $lineheight);
@@ -405,7 +365,6 @@ class InvoicePrinter extends FPDF
             $this->SetFont($this->font, '', 9);
             $this->Cell(0, $lineheight, $this->due, 0, 1, 'R');
         }
-
         //First page
         if ($this->PageNo() == 1) {
             if (($this->margins['t'] + $this->dimensions[1]) > $this->GetY()) {
@@ -416,7 +375,6 @@ class InvoicePrinter extends FPDF
             $this->Ln(5);
             $this->SetFillColor($this->color[0], $this->color[1], $this->color[2]);
             $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-
             $this->SetDrawColor($this->color[0], $this->color[1], $this->color[2]);
             $this->SetFont($this->font, 'B', 10);
             $width = ($this->document['w'] - $this->margins['l'] - $this->margins['r']) / 2;
@@ -430,7 +388,6 @@ class InvoicePrinter extends FPDF
                 $this->to           = $from;
                 $this->from         = $to;
             }
-
             if ($this->display_tofrom === true) {
                 if ($this->displayToFromHeaders === true) {
                     $this->Cell($width, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->lang['from'], self::ICONV_CHARSET_INPUT)), 0, 0, 'L');
@@ -447,7 +404,6 @@ class InvoicePrinter extends FPDF
                 } else {
                     $this->Ln(2);
                 }
-
                 //Information
                 $this->Ln(5);
                 $this->SetTextColor(50, 50, 50);
@@ -526,7 +482,6 @@ class InvoicePrinter extends FPDF
             $this->Ln(12);
         }
     }
-
     public function Body()
     {
         $width_other = ($this->document['w'] - $this->margins['l'] - $this->margins['r'] - $this->firstColumnWidth - ($this->columns * $this->columnSpacing)) / ($this->columns - 1);
@@ -534,6 +489,9 @@ class InvoicePrinter extends FPDF
         $bgcolor     = (1 - $this->columnOpacity) * 255;
         if ($this->items) {
             foreach ($this->items as $item) {
+                if ((empty($item['item'])) || (empty($item['description']))) {
+                    $this->Ln($this->columnSpacing);
+                }
                 if ($item['description']) {
                     //Precalculate height
                     $calculateHeight = new self;
@@ -574,10 +532,10 @@ class InvoicePrinter extends FPDF
                     $resetY = $this->GetY();
                     $this->SetTextColor(120, 120, 120);
                     $this->SetXY($x, $this->GetY() + 8);
-                    $this->SetFont($this->font, '', 7);
+                    $this->SetFont($this->font, '', $this->fontSizeProductDescription);
                     $this->MultiCell(
                         $this->firstColumnWidth,
-                        3,
+                        floor($this->fontSizeProductDescription/2),
                         iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, $item['description']),
                         0,
                         'L',
@@ -651,7 +609,6 @@ class InvoicePrinter extends FPDF
         }
         $badgeX = $this->getX();
         $badgeY = $this->getY();
-
         //Add totals
         if ($this->totals) {
             foreach ($this->totals as $total) {
@@ -693,8 +650,6 @@ class InvoicePrinter extends FPDF
         $this->productsEnded = true;
         $this->Ln();
         $this->Ln(3);
-
-
         //Badge
         if ($this->badge) {
             $badge  = ' ' . mb_strtoupper($this->badge, self::ICONV_CHARSET_INPUT) . ' ';
@@ -715,7 +670,6 @@ class InvoicePrinter extends FPDF
                 $this->Ln(18);
             }
         }
-
         //Add information
         foreach ($this->addText as $text) {
             if ($text[0] == 'title') {
@@ -741,7 +695,6 @@ class InvoicePrinter extends FPDF
             }
         }
     }
-
     public function Footer()
     {
         $this->SetY(-$this->margins['t']);
@@ -757,7 +710,6 @@ class InvoicePrinter extends FPDF
             'R'
         );
     }
-
     public function Rotate($angle, $x = -1, $y = -1)
     {
         if ($x == -1) {
@@ -789,7 +741,6 @@ class InvoicePrinter extends FPDF
             ));
         }
     }
-
     public function _endpage()
     {
         if ($this->angle != 0) {
@@ -798,15 +749,12 @@ class InvoicePrinter extends FPDF
         }
         parent::_endpage();
     }
-
     private function recalculateColumns()
     {
         $this->columns = 4;
-
         if (isset($this->vatField)) {
             $this->columns += 1;
         }
-
         if (isset($this->discountField)) {
             $this->columns += 1;
         }
