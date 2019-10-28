@@ -422,6 +422,8 @@ class InvoicePrinter extends FPDF
             if (isset($this->flipflop)) {
                 $to                 = trans('invoicr::invoicr.to');
                 $from               = trans('invoicr::invoicr.from');
+                \Lang::addLines(['invoicr.to' => trans('invoicr::invoicr.from')], \Lang::getLocale());
+                \Lang::addLines(['invoicr.from' => trans('invoicr::invoicr.to')], \Lang::getLocale());
                 $to                 = $this->to;
                 $from               = $this->from;
                 $this->to           = $from;
