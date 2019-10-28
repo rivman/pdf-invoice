@@ -419,11 +419,13 @@ class InvoicePrinter extends FPDF
             $this->SetDrawColor($this->color[0], $this->color[1], $this->color[2]);
             $this->SetFont($this->font, 'B', 10);
             $width = ($this->document['w'] - $this->margins['l'] - $this->margins['r']) / 2;
+            $lang_to = trans('invoicr::invoicr.to');
+            $lang_from = trans('invoicr::invoicr.from');
             if (isset($this->flipflop)) {
                 $to                 = trans('invoicr::invoicr.to');
                 $from               = trans('invoicr::invoicr.from');
-                \Lang::addLines(['invoicr.to' => trans('invoicr::invoicr.from')], \Lang::getLocale());
-                \Lang::addLines(['invoicr.from' => trans('invoicr::invoicr.to')], \Lang::getLocale());
+                $lang_to = trans('invoicr::invoicr.from');
+                $lang_from = trans('invoicr::invoicr.to');
                 $to                 = $this->to;
                 $from               = $this->from;
                 $this->to           = $from;
@@ -432,8 +434,8 @@ class InvoicePrinter extends FPDF
 
             if ($this->display_tofrom === true) {
                 if ($this->displayToFromHeaders === true) {
-                    $this->Cell($width, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper(trans('invoicr::invoicr.from'), self::ICONV_CHARSET_INPUT)), 0, 0, 'L');
-                    $this->Cell(0, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper(trans('invoicr::invoicr.to'), self::ICONV_CHARSET_INPUT)), 0, 0, 'L');
+                    $this->Cell($width, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($lang_from, self::ICONV_CHARSET_INPUT)), 0, 0, 'L');
+                    $this->Cell(0, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($lang_to, self::ICONV_CHARSET_INPUT)), 0, 0, 'L');
                     $this->Ln(7);
                     $this->SetLineWidth(0.4);
                     $this->Line($this->margins['l'], $this->GetY(), $this->margins['l'] + $width - 10, $this->GetY());
