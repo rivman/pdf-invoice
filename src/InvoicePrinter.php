@@ -131,7 +131,7 @@ class InvoicePrinter extends FPDF
 
     private function hex2rgb($hex)
     {
-        $hex = str_replace("#", "", $hex);
+        $hex = str_replace('#', '', $hex);
         if (strlen($hex) == 3) {
             $r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
             $g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
@@ -162,7 +162,7 @@ class InvoicePrinter extends FPDF
         return true;
     }
 
-    public function setTimeZone($zone = "")
+    public function setTimeZone($zone = '')
     {
         if (!empty($zone) and $this->isValidTimezoneId($zone) === true) {
             date_default_timezone_set($zone);
@@ -228,9 +228,11 @@ class InvoicePrinter extends FPDF
         $this->reference = $reference;
     }
 
-    public function setNumberFormat($decimals, $thousands_sep)
+    // public function setNumberFormat($decimals, $thousands_sep)
+    public function setNumberFormat($decimals = '.', $thousands_sep = ',', $alignment = 'left', $space = true)
     {
-        $this->referenceformat = [$decimals, $thousands_sep];
+        // $this->referenceformat = [$decimals, $thousands_sep];
+        $this->referenceformat = [$decimals, $thousands_sep, $alignment, $space];
     }
 
     public function setFontSizeProductDescription($data)
