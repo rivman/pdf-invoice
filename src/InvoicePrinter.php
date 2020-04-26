@@ -516,6 +516,7 @@ class InvoicePrinter extends FPDF
                     $calculateHeight->SetFont($this->font, '', 7);
                     $calculateHeight->MultiCell($this->firstColumnWidth, 3,
                         iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, $item['description']), 0, 'L', 1);
+                    
                     $descriptionHeight = $calculateHeight->getY() + $cellHeight + 2;
                     $pageHeight        = $this->document['h'] - $this->GetY() - $this->margins['t'] - $this->margins['t'];
                     if ($pageHeight < 35) {
