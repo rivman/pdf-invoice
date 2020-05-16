@@ -9,7 +9,6 @@
  *
  */
 
-
 namespace Workice\PdfInvoice\Tests;
 
 use PHPUnit\Framework\TestCase;

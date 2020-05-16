@@ -9,11 +9,10 @@
  *
  */
 
-
 namespace Workice\PdfInvoice\Tests;
 
-use Workice\PdfInvoice\InvoicePrinter;
 use PHPUnit\Framework\TestCase;
+use Workice\PdfInvoice\InvoicePrinter;
 
 class BaseClassTest extends TestCase
 {
@@ -22,7 +21,7 @@ class BaseClassTest extends TestCase
      */
     public function can_be_instantiated()
     {
-        $invoicr =  new InvoicePrinter();
+        $invoicr = new InvoicePrinter();
 
         $this->assertInstanceOf(InvoicePrinter::class, $invoicr);
     }
