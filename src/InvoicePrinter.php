@@ -669,7 +669,7 @@ class InvoicePrinter extends FPDF
         $this->SetFont($this->font, '', 8);
         $this->SetTextColor(50, 50, 50);
         $this->Cell(0, 10, $this->footernote, 0, 0, 'L');
-        $this->Cell(0, 10, iconv('UTF-8', 'ISO-8859-1', trans('invoicr::invoicr.page_of')) . ' ' . $this->PageNo() . ' ' . trans('invoicr::invoicr.page_of') . ' {nb}', 0, 0,
+        $this->Cell(0, 10, iconv('UTF-8', 'ISO-8859-1', trans('invoicr::invoicr.page')) . ' ' . $this->PageNo() . ' ' . trans('invoicr::invoicr.page_of') . ' {nb}', 0, 0,
             'R');
     }
 
